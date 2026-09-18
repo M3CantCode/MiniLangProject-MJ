@@ -7,22 +7,43 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        //
-        StringBuilder sb = new StringBuilder();
-        BufferedReader br = new BufferedReader(new FileReader("MiniLang_Program.txt"));
-        System.out.println(br.toString());
 
-        String line;
-        while ((line = br.readLine()) != null) {
-            sb.append(line).append("\n");
-        }
-        br.close();
+        //Calls getText function. Stores array into programText
+        String[] programText = getText();
 
-        String[] strings = sb.toString().split(" ");
-
-
-        for (int j = 0; j < strings.length; j++) {
-            System.out.printf("%s ", strings[j]);
+        //checking array
+        for (int i = 0; i < programText.length; i++) {
+            System.out.println(programText[i]);
         }
     }
+
+    //
+
+
+    // getText():
+    // - reads off data from file
+    // - searches for "MiniLang_Program.txt"
+    // - tries to read
+    // - if able to, for each line in the text file, append to StringBuilder
+    // returns String array split by ";"
+    private static String[] getText() throws IOException {
+        StringBuilder sb = new StringBuilder();
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader("MiniLang_Program.txt"));
+
+        } catch (IOException e) {
+            System.out.println("Unable to read file.");
+            throw new RuntimeException(e);
+        } finally {
+            String line;
+            while ((line = br.readLine()) != null) {
+                sb.append(line).append("");
+            }
+        }
+        br.close();
+        return sb.toString().split(";");
+    }
+
+
 }
