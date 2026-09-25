@@ -1,3 +1,7 @@
 //comment: testing error
 let z = 0
 display (z)
+
+let y = 2
+;
+display y    ;
