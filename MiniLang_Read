@@ -1,0 +1,9 @@
+let x = 5;
+let y = x + 3;
+display (y);
+
+display (3 + 4 * 2);
+
+let x = 5;
+x = x + 2;
+display (x);
