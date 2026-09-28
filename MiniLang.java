@@ -56,10 +56,31 @@ public class MiniLang {
         String[] operators = {"+", "-", "*", "/", "%"};
         for (String line : code) {
             String[] tokens = line.split(" ");
-            for (String token : tokens) {
+            for (int i = 0; i < tokens.length; i++) {
+                String token = tokens[i];
                 if (Arrays.asList(operators).contains(token)) {
                     Operator op = new Operator("operator", token);
                     System.out.println("Operator: " + op.getValue());
+                } else if (token.matches("let" )){
+                    if (tokens[i+1] == null || tokens[i+2] == null) {
+                        System.out.println("Error: Invalid syntax for 'let' command.");
+                        continue;
+                    }
+                    if (tokens[i+1].equals("=")) {
+                        boolean onlyLetters = tokens[i + 2].matches("[a-zA-Z]+");
+                        boolean onlyNumbers = tokens[i + 2].matches("[0-9]+");
+                        if (onlyLetters) {
+                            Token t = new Token("variable", tokens[i + 2]);
+                            System.out.println("Variable: " + t.getValue());
+                        } else if (onlyNumbers) {
+                            Token t = new Token("number", tokens[i + 2]);
+                            System.out.println("Number: " + t.getValue());
+                        } else {
+                            Token t = new Token("token", tokens[i + 2]);
+                            System.out.println("Token: " + t.getValue());
+                        }
+                    }
+
                 } else {
                     Token t = new Token("token", token);
                     System.out.println("Token: " + t.getValue());
