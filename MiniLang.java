@@ -32,16 +32,40 @@ public class MiniLang {
         for (int i = 0; i < programText.length; i++) {
             System.out.println(programText[i]);
         }
-
+        System.out.println("--------------------------------------------------");
         //checking validity of code to be true or false
         System.out.println(isValidCode(programText));
-
+        System.out.println("--------------------------------------------------");
         //checking logic
         //String[][]
         for (String[] r : toMatrix(programText))
             System.out.println(r[1]);
         runCode(toMatrix(programText));
+        System.out.println("--------------------------------------------------");
+        //checking tokenizer
+        tokenize(programText);
+    }
 
+    // tokenize():
+    // - takes in a String array of code
+    // - splits each line into tokens based on whitespace
+    // - checks if each token is an operator or not
+    // - prints out the type and value of each token
+    // - TODO: add more functionality to the tokenizer, such as handling variables and other types of tokens
+    public static void tokenize(String[] code) {
+        String[] operators = {"+", "-", "*", "/", "%"};
+        for (String line : code) {
+            String[] tokens = line.split(" ");
+            for (String token : tokens) {
+                if (Arrays.asList(operators).contains(token)) {
+                    Operator op = new Operator("operator", token);
+                    System.out.println("Operator: " + op.getValue());
+                } else {
+                    Token t = new Token("token", token);
+                    System.out.println("Token: " + t.getValue());
+                }
+            }
+        }
     }
 
     // isValidCode
@@ -78,12 +102,12 @@ public class MiniLang {
     //
     public static void runCode(String[][] code) {
         //
-        List<VariableClass> list = new ArrayList<>();
-        list.add(new VariableClass("testing"));
+        List<Variable> list = new ArrayList<>();
+        list.add(new Variable("testing"));
         for (String[] c : code) {
             //
             if (c[0].equalsIgnoreCase("let")) {
-                list.add(new VariableClass(c[1]));
+                list.add(new Variable(c[1]));
             }
         }
 
