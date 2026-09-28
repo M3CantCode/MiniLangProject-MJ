@@ -1,4 +1,4 @@
-public class VariableClass {
+public class Variable {
 
     private String varName = "";
     private int intVal;
@@ -6,7 +6,7 @@ public class VariableClass {
     private char charVal;
 
 
-    public VariableClass(String name) {
+    public Variable(String name) {
         //
         varName = name;
     }
