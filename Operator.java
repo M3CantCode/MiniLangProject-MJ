@@ -1,6 +1,7 @@
 public class Operator extends Token {
     private String num1;
     private String num2;
+    // Constructor
     public Operator(String type, String value) {
         super(type, value);
     }
@@ -28,7 +29,6 @@ public class Operator extends Token {
     }
     // compare():
     // - takes in a value and two numbers, returns the result of the comparison
-    // - value: the operator to be used
     public boolean compare(String value, String num1, String num2) {
         int numerator1 = Integer.parseInt(num1);
         int numerator2 = Integer.parseInt(num2);
