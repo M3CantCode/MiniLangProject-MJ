@@ -36,14 +36,14 @@ public class MiniLang {
         //checking validity of code to be true or false
         System.out.println(isValidCode(programText));
         System.out.println("--------------------------------------------------");
-        //checking logic
-        //String[][]
-        for (String[] r : toMatrix(programText))
-            System.out.println(r[1]);
-        runCode(toMatrix(programText));
-        System.out.println("--------------------------------------------------");
+
         //checking tokenizer
         tokenize(programText);
+        System.out.println("--------------------------------------------------");
+
+        //logic
+        //String[][]
+        runCode(toMatrix(programText));
     }
 
     // tokenize():
@@ -101,7 +101,7 @@ public class MiniLang {
         for (int i = 0; i < code.length; i++) {
             String[] str = code[i].split(" ");      //split line into elements split by whitespace
 
-////TO-DO: Check first element and compare with valid commands
+////TODO: Check first element and compare with valid commands
             //checks every element in the line
             int commandCount = 0;
             for (int j = 0; j < str.length; j++) {
@@ -111,7 +111,7 @@ public class MiniLang {
                     if (name.strip().equalsIgnoreCase(str[j])) { commandCount++; }
                 }
                 if (commandCount > 1) { return false; }     //returns false if any multiple commands in line
-////TO-DO: other validity checks in the code text
+////TODO: other validity checks in the code text
             }
 
         }
@@ -165,7 +165,10 @@ public class MiniLang {
     }
 
 
-    //
+    /* toMatrix
+     *
+     *
+     */
     public static String[][] toMatrix(String[] code) {
         //
         String[][] m = new String[code.length][];
