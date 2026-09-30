@@ -55,31 +55,52 @@ public class MiniLang {
     public static void tokenize(String[] code) {
         String[] operators = {"+", "-", "*", "/", "%"};
         for (String line : code) {
-            String[] tokens = line.split(" ");
-            for (int i = 0; i < tokens.length; i++) {
-                String token = tokens[i];
-                if (Arrays.asList(operators).contains(token)) {
+            String[] chunks = line.split("(?<=;)|(?=;)|\\s+"); // splits the line into chunks based on whitespace and semicolons
+            for (int i = 0; i < chunks.length; i++) {
+                String token = chunks[i];
+
+                // checks if the chunk is an operator, if so, create an Operator token
+                if (Arrays.asList(operators).contains(chunks[i])) {
                     Operator op = new Operator("operator", token);
                     System.out.println("Operator: " + op.getValue());
-                } else if (token.matches("let" )){
-                    if (tokens[i+1] == null || tokens[i+2] == null) {
+                // checks if the chunk is a 'let' command, if so, create a Variable token
+                } else if (token.matches("let")) {
+
+                    // check if the next chunks of text are valid for a 'let' command
+                    String varName = chunks[i + 1]; // should be the variable name (only letters)
+                    String assignment = chunks[i + 2]; // should be "="
+                    String varValue = chunks[i + 3]; // should be either a string or a number
+                    if (varName == null || assignment == null ||
+                        varValue == null || !varName.equals("=") ||
+                         !varValue.equals(";") ||
+                          !assignment.equals("=")) {
                         System.out.println("Error: Invalid syntax for 'let' command.");
                         continue;
                     }
-                    if (tokens[i+1].equals("=")) {
-                        boolean onlyLetters = tokens[i + 2].matches("[a-zA-Z]+");
-                        boolean onlyNumbers = tokens[i + 2].matches("[0-9]+");
-                        if (onlyLetters) {
-                            Token t = new Token("variable", tokens[i + 2]);
-                            System.out.println("Variable: " + t.getValue());
-                        } else if (onlyNumbers) {
-                            Token t = new Token("number", tokens[i + 2]);
-                            System.out.println("Number: " + t.getValue());
-                        } else {
-                            Token t = new Token("token", tokens[i + 2]);
-                            System.out.println("Token: " + t.getValue());
-                        }
+
+                    // check if the variable name is valid (only letters)
+                    boolean variableNameValid = varName.matches("[a-zA-Z]+");
+                    if (!variableNameValid) {
+                        System.out.println("Error: Invalid variable name. Variable names must consist of letters only.");
+                        continue;
                     }
+                    
+                    // check if the variable value is valid (only letters or only numbers)
+                    // if the variable value is valid, create a new Variable token
+                    boolean onlyLetters = varValue.matches("[a-zA-Z]+");
+                    boolean onlyNumbers = varValue.matches("[0-9]+");
+                    if (onlyLetters) {
+                            Variable t = new Variable(varName,varValue);
+                            System.out.println("String: " + t.getName());
+                            System.out.println(t.getName() + "'s value is: " + t.getValue());
+                        } else if (onlyNumbers) {
+                            Variable t = new Variable(varName,varValue);
+                            System.out.println("Number: " + t.getName());
+                            System.out.println(t.getName() + "'s value is: " + t.getValue());
+                        } else {
+                            System.out.println("Error: Invalid value for variable. Must be either a string or a number.");
+                        }
+                    
 
                 } else {
                     Token t = new Token("token", token);
@@ -101,7 +122,7 @@ public class MiniLang {
         for (int i = 0; i < code.length; i++) {
             String[] str = code[i].split(" ");      //split line into elements split by whitespace
 
-////TO-DO: Check first element and compare with valid commands
+////TODO: Check first element and compare with valid commands
             //checks every element in the line
             int commandCount = 0;
             for (int j = 0; j < str.length; j++) {
@@ -111,7 +132,7 @@ public class MiniLang {
                     if (name.strip().equalsIgnoreCase(str[j])) { commandCount++; }
                 }
                 if (commandCount > 1) { return false; }     //returns false if any multiple commands in line
-////TO-DO: other validity checks in the code text
+////TODO: other validity checks in the code text
             }
 
         }
@@ -124,16 +145,16 @@ public class MiniLang {
     public static void runCode(String[][] code) {
         //
         List<Variable> list = new ArrayList<>();
-        list.add(new Variable("testing"));
+        list.add(new Variable("testing", "test"));
         for (String[] c : code) {
             //
             if (c[0].equalsIgnoreCase("let")) {
-                list.add(new Variable(c[1]));
+                list.add(new Variable(c[1], c[2]));
             }
         }
 
         for (int i = 0; i < list.size(); i++) {
-            System.out.println(list.get(i).getName());
+            System.out.println(list.get(i).getName() + ": " + list.get(i).getValue());
         }
 
     }

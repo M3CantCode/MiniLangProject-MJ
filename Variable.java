@@ -1,22 +1,25 @@
-public class Variable {
+public class Variable extends Token {
 
-    private String varName = "";
     private int intVal;
     private double doubVal;
     private char charVal;
 
-
-    public Variable(String name) {
-        //
-        varName = name;
+    // Constructor
+    public Variable(String name, String value) {
+        super(name, value);
     }
 
+    // Getters and Setters
     public String getName() {
-        return varName;
+        return super.getName();
+    }
+
+    public String getValue() {
+        return super.getValue();
     }
 
     public void setNewName(String name) {
-        varName = name;
+        super.setName(name);
     }
 
     public void setIntVal(int i) {
@@ -30,4 +33,5 @@ public class Variable {
     public void setCharVal(char c) {
         charVal = c;
     }
+    
 }

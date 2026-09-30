@@ -1,20 +1,32 @@
 public class Token {
-    private String type;
+    private String name;
     private String value;
-    public Token(String type) {
-        this.type = type;
+
+    // Constructors
+    public Token(String name) {
+        this.name = name;
         this.value = "";
     }
-    public Token(String type, String value) {
-        this.type = type;
+    
+    public Token(String name, String value) {
+        this.name = name;
         this.value = value;
     }
 
-    public String getType() {
-        return type;
+    // Getters and Setters
+    public String getName() {
+        return name;
     }
 
     public String getValue() {
         return value;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }   
