@@ -1,6 +1,8 @@
 let x = 5;
 let y = x + 3;
+let z = true;
 display (y);
+// comment
 
 display (3 + 4 * 2);
 

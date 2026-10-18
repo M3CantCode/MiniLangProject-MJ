@@ -48,31 +48,42 @@ public class MiniLang {
 
     // tokenize():
     // - takes in a String array of code
-    // - splits each line into tokens based on whitespace
-    // - checks if each token is an operator or not
-    // - prints out the type and value of each token
+    // - splits each line into chunks based on whitespace
+    // - checks if chunk(s) meet the criteria for a token
+    // - prints out the type and value of each token (will be used for debugging purposes)
     // - TODO: add more functionality to the tokenizer, such as handling variables and other types of tokens
     public static void tokenize(String[] code) {
         String[] operators = {"+", "-", "*", "/", "%"};
+        ArrayList<Token> tokens = new ArrayList<>();
         for (String line : code) {
             String[] chunks = line.split("(?<=;)|(?=;)|\\s+"); // splits the line into chunks based on whitespace and semicolons
-            for (int i = 0; i < chunks.length; i++) {
-                String token = chunks[i];
 
-                // checks if the chunk is an operator, if so, create an Operator token
+            // check if line is empty or a comment, if so, skip to the next line
+            // NOTE: doesn't work properly, need to fix
+            if (chunks.length == 0 || chunks[0].equals("//")) {
+                System.out.println("Skipping line: " + line);
+                continue; 
+            }
+
+            // Iterates through the chunks to create tokens
+            for (int i = 0; i < chunks.length; i++) {
+                String chunk = chunks[i];
+                // checks if the chunk is an operator, (For Operator Tokens)
                 if (Arrays.asList(operators).contains(chunks[i])) {
-                    Operator op = new Operator("operator", token);
-                    System.out.println("Operator: " + op.getValue());
-                // checks if the chunk is a 'let' command, if so, create a Variable token
-                } else if (token.matches("let")) {
+                    // creates a new Operator token
+                    Operator op = new Operator(chunk);
+                    tokens.add(op);
+                    System.out.println("Operator: " + op.getType());
+                // checks if the chunk is a 'let' command (For Variable Tokens)
+                } else if (chunk.matches("let")) {
 
                     // check if the next chunks of text are valid for a 'let' command
                     String varName = chunks[i + 1]; // should be the variable name (only letters)
                     String assignment = chunks[i + 2]; // should be "="
-                    String varValue = chunks[i + 3]; // should be either a string or a number
+                    String varValue = chunks[i + 3]; // should be either a number or boolean
+                    //TODO: also check if varValue is a valid integer variable
                     if (varName == null || assignment == null ||
-                        varValue == null || !varName.equals("=") ||
-                         !varValue.equals(";") ||
+                        varValue == null || varValue.equals(";") ||
                           !assignment.equals("=")) {
                         System.out.println("Error: Invalid syntax for 'let' command.");
                         continue;
@@ -85,26 +96,31 @@ public class MiniLang {
                         continue;
                     }
                     
-                    // check if the variable value is valid (only letters or only numbers)
+                    // check if the variable value is valid (number or boolean)
                     // if the variable value is valid, create a new Variable token
-                    boolean onlyLetters = varValue.matches("[a-zA-Z]+");
                     boolean onlyNumbers = varValue.matches("[0-9]+");
-                    if (onlyLetters) {
-                            Variable t = new Variable(varName,varValue);
-                            System.out.println("String: " + t.getName());
-                            System.out.println(t.getName() + "'s value is: " + t.getValue());
-                        } else if (onlyNumbers) {
-                            Variable t = new Variable(varName,varValue);
+                    boolean isBoolean = varValue.equals("true") || varValue.equals("false");
+                    if (isBoolean) {
+                        Variable t = new Variable(varName,varValue);
+                        System.out.println("Boolean: " + t.getName());
+                        tokens.add(t);
+                        System.out.println(t.getName() + "'s value is: " + t.getValue());
+                    } else if (onlyNumbers) {
+                        Variable t = new Variable(varName,varValue);
                             System.out.println("Number: " + t.getName());
+                            tokens.add(t);
                             System.out.println(t.getName() + "'s value is: " + t.getValue());
                         } else {
-                            System.out.println("Error: Invalid value for variable. Must be either a string or a number.");
+                            System.out.println("Error: Invalid value for variable. Must be either a boolean or a number.");
                         }
                     
 
                 } else {
-                    Token t = new Token("token", token);
+                    // creates an unclassified token
+                    // NOTE: This is a placeholder for any other tokens that may be added in the future
+                    Token t = new Token("token", chunk);
                     System.out.println("Token: " + t.getValue());
+                    tokens.add(t);
                 }
             }
         }
