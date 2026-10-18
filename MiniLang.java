@@ -1,7 +1,7 @@
 // ----------
 // MiniLang Project - CSC 220
 //
-// Authors: Kelvin & Jonathan
+// Authors: Melvin & Jonathan
 //
 // Purpose:
 // -
