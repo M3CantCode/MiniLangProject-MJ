@@ -37,11 +37,8 @@ public class MiniLang {
         System.out.println(isValidCode(programText));
         System.out.println("--------------------------------------------------");
         //checking logic
-        //String[][]
-        for (String[] r : toMatrix(programText))
-            System.out.println(r[1]);
-        runCode(toMatrix(programText));
-        System.out.println("--------------------------------------------------");
+
+        //System.out.println("--------------------------------------------------");
         //checking tokenizer
         tokenize(programText);
     }
@@ -199,19 +196,6 @@ public class MiniLang {
         }
         br.close();
         return sb.toString().split(";");
-    }
-
-
-    //
-    public static String[][] toMatrix(String[] code) {
-        //
-        String[][] m = new String[code.length][];
-
-        for (int i = 0; i < code.length; i++) {
-            m[i] = code[i].strip().split(" ");
-        }
-
-        return m;
     }
 
 
