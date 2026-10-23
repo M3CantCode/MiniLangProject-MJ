@@ -42,8 +42,6 @@ public class MiniLang {
         System.out.println("--------------------------------------------------");
 
         //logic
-        //String[][]
-        runCode(toMatrix(programText));
     }
 
     // tokenize():
@@ -199,22 +197,6 @@ public class MiniLang {
         }
         br.close();
         return sb.toString().split(";");
-    }
-
-
-    /* toMatrix
-     *
-     *
-     */
-    public static String[][] toMatrix(String[] code) {
-        //
-        String[][] m = new String[code.length][];
-
-        for (int i = 0; i < code.length; i++) {
-            m[i] = code[i].strip().split(" ");
-        }
-
-        return m;
     }
 
 
