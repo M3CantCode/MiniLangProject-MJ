@@ -42,8 +42,7 @@ public class MiniLang {
         System.out.println("--------------------------------------------------");
 
         tokenize(programText);
-        //logic
-        //String[][]
+
     }
 
     // tokenize():
