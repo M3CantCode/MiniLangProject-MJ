@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 
 public class MiniLang {
 
@@ -55,7 +54,7 @@ public class MiniLang {
     // - TODO: add more functionality to the tokenizer, such as handling variables and other types of tokens
     public static void tokenize(String[] code) {
         String[] operators = {"+", "-", "*", "/", "%"};
-        ArrayList<Token> tokens = new ArrayList<>();
+        ArrayList<TOKEN> tokens = new ArrayList<>();
         for (String line : code) {
             String[] chunks = line.split("(?<=;)|(?=;)|\\s+"); // splits the line into chunks based on whitespace and semicolons
 
@@ -69,13 +68,13 @@ public class MiniLang {
             // Iterates through the chunks to create tokens
             for (int i = 0; i < chunks.length; i++) {
                 String chunk = chunks[i];
-                // checks if the chunk is an operator, (For Operator Tokens)
+                // checks if the chunk is an operator, (For OPERATOR Tokens)
                 if (Arrays.asList(operators).contains(chunks[i])) {
-                    // creates a new Operator token
-                    Operator op = new Operator(chunk);
+                    // creates a new OPERATOR token
+                    OPERATOR op = new OPERATOR(chunk);
                     tokens.add(op);
-                    System.out.println("Operator: " + op.getType());
-                // checks if the chunk is a 'let' command (For Variable Tokens)
+                    System.out.println("OPERATOR: " + op.getType());
+                // checks if the chunk is a 'let' command (For VARIABLE Tokens)
                 } else if (chunk.matches("let")) {
 
                     // check if the next chunks of text are valid for a 'let' command
@@ -93,21 +92,21 @@ public class MiniLang {
                     // check if the variable name is valid (only letters)
                     boolean variableNameValid = varName.matches("[a-zA-Z]+");
                     if (!variableNameValid) {
-                        System.out.println("Error: Invalid variable name. Variable names must consist of letters only.");
+                        System.out.println("Error: Invalid variable name. VARIABLE names must consist of letters only.");
                         continue;
                     }
                     
                     // check if the variable value is valid (number or boolean)
-                    // if the variable value is valid, create a new Variable token
+                    // if the variable value is valid, create a new VARIABLE token
                     boolean onlyNumbers = varValue.matches("[0-9]+");
                     boolean isBoolean = varValue.equals("true") || varValue.equals("false");
                     if (isBoolean) {
-                        Variable t = new Variable(varName,varValue);
-                        System.out.println("Boolean: " + t.getName());
+                        VARIABLE t = new VARIABLE(varName,varValue);
+                        System.out.println("BOOLEAN: " + t.getName());
                         tokens.add(t);
                         System.out.println(t.getName() + "'s value is: " + t.getValue());
                     } else if (onlyNumbers) {
-                        Variable t = new Variable(varName,varValue);
+                        VARIABLE t = new VARIABLE(varName,varValue);
                             System.out.println("Number: " + t.getName());
                             tokens.add(t);
                             System.out.println(t.getName() + "'s value is: " + t.getValue());
@@ -119,8 +118,8 @@ public class MiniLang {
                 } else {
                     // creates an unclassified token
                     // NOTE: This is a placeholder for any other tokens that may be added in the future
-                    Token t = new Token("token", chunk);
-                    System.out.println("Token: " + t.getValue());
+                    TOKEN t = new TOKEN("token", chunk);
+                    System.out.println("TOKEN: " + t.getValue());
                     tokens.add(t);
                 }
             }
@@ -161,12 +160,12 @@ public class MiniLang {
     //
     public static void runCode(String[][] code) {
         //
-        List<Variable> list = new ArrayList<>();
-        list.add(new Variable("testing", "test"));
+        List<VARIABLE> list = new ArrayList<>();
+        list.add(new VARIABLE("testing", "test"));
         for (String[] c : code) {
             //
             if (c[0].equalsIgnoreCase("let")) {
-                list.add(new Variable(c[1], c[2]));
+                list.add(new VARIABLE(c[1], c[2]));
             }
         }
 
