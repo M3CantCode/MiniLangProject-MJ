@@ -1,11 +1,11 @@
-public class Variable extends Token {
+public class VARIABLE extends TOKEN {
 
     private int intVal;
     private double doubVal;
     private char charVal;
 
     // Constructor
-    public Variable(String name, String value) {
+    public VARIABLE(String name, String value) {
         super(name, value);
     }
 

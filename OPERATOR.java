@@ -1,8 +1,8 @@
-public class Operator extends Token {
+public class OPERATOR extends TOKEN {
     private String num1;
     private String num2;
     // Constructor
-    public Operator(String type) {
+    public OPERATOR(String type) {
         super(type);
     }
 

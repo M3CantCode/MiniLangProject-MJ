@@ -1,14 +1,14 @@
-public class Token {
+public class TOKEN {
     private String name;
     private String value;
 
     // Constructors
-    public Token(String name) {
+    public TOKEN(String name) {
         this.name = name;
         this.value = "";
     }
     
-    public Token(String name, String value) {
+    public TOKEN(String name, String value) {
         this.name = name;
         this.value = value;
     }
