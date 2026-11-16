@@ -36,14 +36,14 @@ public class MiniLang {
         //checking validity of code to be true or false
         System.out.println(isValidCode(programText));
         System.out.println("--------------------------------------------------");
-        //checking logic
-        //String[][]
-        for (String[] r : toMatrix(programText))
-            System.out.println(r[1]);
-        runCode(toMatrix(programText));
-        System.out.println("--------------------------------------------------");
+
         //checking tokenizer
         tokenize(programText);
+        System.out.println("--------------------------------------------------");
+
+        tokenize(programText);
+        //logic
+        //String[][]
     }
 
     // tokenize():
@@ -62,7 +62,7 @@ public class MiniLang {
             // NOTE: doesn't work properly, need to fix
             if (chunks.length == 0 || chunks[0].equals("//")) {
                 System.out.println("Skipping line: " + line);
-                continue; 
+                continue;
             }
 
             // Iterates through the chunks to create tokens
@@ -74,7 +74,7 @@ public class MiniLang {
                     OPERATOR op = new OPERATOR(chunk);
                     tokens.add(op);
                     System.out.println("OPERATOR: " + op.getType());
-                // checks if the chunk is a 'let' command (For VARIABLE Tokens)
+                    // checks if the chunk is a 'let' command (For VARIABLE Tokens)
                 } else if (chunk.matches("let")) {
 
                     // check if the next chunks of text are valid for a 'let' command
@@ -83,8 +83,8 @@ public class MiniLang {
                     String varValue = chunks[i + 3]; // should be either a number or boolean
                     //TODO: also check if varValue is a valid integer variable
                     if (varName == null || assignment == null ||
-                        varValue == null || varValue.equals(";") ||
-                          !assignment.equals("=")) {
+                            varValue == null || varValue.equals(";") ||
+                            !assignment.equals("=")) {
                         System.out.println("Error: Invalid syntax for 'let' command.");
                         continue;
                     }
@@ -95,25 +95,25 @@ public class MiniLang {
                         System.out.println("Error: Invalid variable name. VARIABLE names must consist of letters only.");
                         continue;
                     }
-                    
+
                     // check if the variable value is valid (number or boolean)
                     // if the variable value is valid, create a new VARIABLE token
                     boolean onlyNumbers = varValue.matches("[0-9]+");
                     boolean isBoolean = varValue.equals("true") || varValue.equals("false");
                     if (isBoolean) {
-                        VARIABLE t = new VARIABLE(varName,varValue);
+                        VARIABLE t = new VARIABLE(varName, varValue);
                         System.out.println("BOOLEAN: " + t.getName());
                         tokens.add(t);
                         System.out.println(t.getName() + "'s value is: " + t.getValue());
                     } else if (onlyNumbers) {
-                        VARIABLE t = new VARIABLE(varName,varValue);
-                            System.out.println("Number: " + t.getName());
-                            tokens.add(t);
-                            System.out.println(t.getName() + "'s value is: " + t.getValue());
-                        } else {
-                            System.out.println("Error: Invalid value for variable. Must be either a boolean or a number.");
-                        }
-                    
+                        VARIABLE t = new VARIABLE(varName, varValue);
+                        System.out.println("Number: " + t.getName());
+                        tokens.add(t);
+                        System.out.println(t.getName() + "'s value is: " + t.getValue());
+                    } else {
+                        System.out.println("Error: Invalid value for variable. Must be either a boolean or a number.");
+                    }
+
 
                 } else {
                     // creates an unclassified token
@@ -145,9 +145,13 @@ public class MiniLang {
                 //running checks for each element in line
                 for (String name : validCommandName) {
                     //checking if there are multiple named commands in the same line
-                    if (name.strip().equalsIgnoreCase(str[j])) { commandCount++; }
+                    if (name.strip().equalsIgnoreCase(str[j])) {
+                        commandCount++;
+                    }
                 }
-                if (commandCount > 1) { return false; }     //returns false if any multiple commands in line
+                if (commandCount > 1) {
+                    return false;
+                }     //returns false if any multiple commands in line
 ////TODO: other validity checks in the code text
             }
 
@@ -205,19 +209,5 @@ public class MiniLang {
         }
 
     }
-
-
-    //
-    public static String[][] toMatrix(String[] code) {
-        //
-        String[][] m = new String[code.length][];
-
-        for (int i = 0; i < code.length; i++) {
-            m[i] = code[i].strip().split(" ");
-        }
-
-        return m;
-    }
-
 
 }
