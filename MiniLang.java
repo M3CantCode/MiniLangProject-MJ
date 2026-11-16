@@ -14,6 +14,7 @@
 // ----------
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class MiniLang {
 
         //checking array that it read correctly
         for (int i = 0; i < programText.length; i++) {
-            System.out.println(programText[i]);
+            System.out.print("[" + programText[i] + "] ");
         }
         System.out.println("--------------------------------------------------");
         //checking validity of code to be true or false
@@ -180,25 +181,30 @@ public class MiniLang {
     // - reads off data from file
     // - searches for "MiniLang_Program.txt"
     // - tries to read
-    // - if able to, for each line in the text file, append to StringBuilder
-    // returns String array split by ";"
+    // - if able to: add line to ArrayList, convert ArrayList to Array
+    // returns Array of lines
     private static String[] getText() throws IOException {
-        StringBuilder sb = new StringBuilder();
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new FileReader("MiniLang_Program.txt"));
+        //
+        try (BufferedReader br = new BufferedReader(new FileReader("MiniLang_Program.txt"))) {
+            String line;
+            int num = 0;
+            ArrayList<String> lines = new ArrayList<>();
+            while ((line = br.readLine()) != null) {
+                if (!line.isEmpty()) {
+                    num++;
+                    lines.add(line);
+                }
+            }
+            String[] arr = new String[num];
+            for (int i = 0; i < num; i++) {
+                arr[i] = lines.get(i);
+            }
+            return arr;
 
         } catch (IOException e) {
-            System.out.println("Unable to read file.");
-            throw new RuntimeException(e);
-        } finally {
-            String line;
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
-            }
+            throw new FileNotFoundException(e.getMessage());
         }
-        br.close();
-        return sb.toString().split(";");
+
     }
 
 
