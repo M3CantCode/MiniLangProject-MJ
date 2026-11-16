@@ -1,7 +1,7 @@
-public class Boolean extends Token {
+public class BOOLEAN extends TOKEN {
     private String bool1;
     private String bool2;
-    public Boolean(String type, String value) {
+    public BOOLEAN(String type, String value) {
         super(type, value);
     }
 
