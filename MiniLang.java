@@ -29,8 +29,8 @@ public class MiniLang {
         String[] programText = getText();
 
         //checking array that it read correctly
-        for (int i = 0; i < programText.length; i++) {
-            System.out.print("[" + programText[i] + "] ");
+        for (String s : programText) {
+            System.out.print("[" + s + "] ");
         }
         System.out.println("--------------------------------------------------");
         //checking validity of code to be true or false
@@ -63,6 +63,9 @@ public class MiniLang {
             }
 
         }
+        for (TOKEN tok : tokens) {
+            System.out.printf("%s\n", tok.getClass().getSimpleName());
+        }
     }
 
     // isValidCode
@@ -74,17 +77,20 @@ public class MiniLang {
         String[] validCommandName = {"let", "display"};
 
         //for each line
-        for (int i = 0; i < code.length; i++) {
-            String[] str = code[i].split(" ");      //split line into elements split by whitespace
+        ////TODO: Check first element and compare with valid commands
+        ////TODO: other validity checks in the code text
+        for (String s : code) {
+            String[] str = s.split(" ");      //split line into elements split by whitespace
 
 ////TODO: Check first element and compare with valid commands
             //checks every element in the line
             int commandCount = 0;
-            for (int j = 0; j < str.length; j++) {
+            ////TODO: other validity checks in the code text
+            for (String string : str) {
                 //running checks for each element in line
                 for (String name : validCommandName) {
                     //checking if there are multiple named commands in the same line
-                    if (name.strip().equalsIgnoreCase(str[j])) {
+                    if (name.strip().equalsIgnoreCase(string)) {
                         commandCount++;
                     }
                 }
@@ -112,8 +118,8 @@ public class MiniLang {
             }
         }
 
-        for (int i = 0; i < list.size(); i++) {
-            System.out.println(list.get(i).getName() + ": " + list.get(i).getValue());
+        for (VARIABLE variable : list) {
+            System.out.println(variable.getName() + ": " + variable.getValue());
         }
 
     }
