@@ -5,8 +5,8 @@ public class VARIABLE extends TOKEN {
     private char charVal;
 
     // Constructor
-    public VARIABLE(String name, String value) {
-        super(name, value);
+    public VARIABLE(String name) {
+        super(name);
     }
 
     // Getters and Setters

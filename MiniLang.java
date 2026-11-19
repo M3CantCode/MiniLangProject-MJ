@@ -29,19 +29,17 @@ public class MiniLang {
         String[] programText = getText();
 
         //checking array that it read correctly
-        for (String s : programText) {
-            System.out.print("[" + s + "] ");
-        }
+
         System.out.println("--------------------------------------------------");
         //checking validity of code to be true or false
-        System.out.println(isValidCode(programText));
+        for (String s : programText) {
+            System.out.print("[" + s + "] ");
+        }System.out.println(isValidCode(programText));
         System.out.println("--------------------------------------------------");
 
         //checking tokenizer
         tokenize(programText);
         System.out.println("--------------------------------------------------");
-
-        tokenize(programText);
 
     }
 
@@ -51,20 +49,41 @@ public class MiniLang {
     // - prints out the type and value of each token (will be used for debugging purposes)
     // - TODO: add more functionality to the tokenizer, such as handling variables and other types of tokens
     public static void tokenize(String[] code) {
-        char[] operators = {'+', '-', '*', '/', '%'};
+        String oper = "+ - * / %";
+        String keyw = "display if then else";
         ArrayList<TOKEN> tokens = new ArrayList<>();
         for (String line : code) {                      //for each line in code
-            for (char chara : line.toCharArray()) {     //for each char in string
-                for (char op : operators) {             //for each char in operator
-                    if (chara == op) {                  // compare char in string to char in operator
-                        tokens.add(new OPERATOR("" + chara));   //add operator to arraylist
+            String cleaned = line.replaceAll("\\s+", " ").strip();   //cleanup whitespaces
+            char chara = cleaned.charAt(0);
+            StringBuilder sb = new StringBuilder();
+            //boolean isComment = false;
+            for (int i = 0; i < cleaned.length(); i++) {
+                if (sb.toString().contains("//")) {
+                    while (i < cleaned.length()) {
+                        sb.append(cleaned.charAt(i));
+                        i++;
                     }
+                    tokens.add(new COMMENT(sb.toString()));
+                    sb.delete(0, sb.length());
+                } else if (cleaned.charAt(i) == ' ') {
+                    if (sb.toString().equals("let")) {
+                        tokens.add(new LET(sb.toString()));
+                    } else if (keyw.contains(sb.toString())) {
+                        tokens.add(new KEYWORD(sb.toString()));
+                    } else if (oper.contains(sb.toString())) {
+                        tokens.add(new OPERATOR(sb.toString()));
+                    } else {
+                        tokens.add(new IDENTIFIER(sb.toString()));
+                    }
+                    sb.delete(0, sb.length());
+                }
+                else {
+                    sb.append(cleaned.charAt(i));
                 }
             }
-
         }
         for (TOKEN tok : tokens) {
-            System.out.printf("%s\n", tok.getClass().getSimpleName());
+            System.out.printf("%s: %s\n", tok.getClass().getSimpleName(), tok.getName());
         }
     }
 
@@ -109,18 +128,6 @@ public class MiniLang {
     //
     public static void runCode(String[][] code) {
         //
-        List<VARIABLE> list = new ArrayList<>();
-        list.add(new VARIABLE("testing", "test"));
-        for (String[] c : code) {
-            //
-            if (c[0].equalsIgnoreCase("let")) {
-                list.add(new VARIABLE(c[1], c[2]));
-            }
-        }
-
-        for (VARIABLE variable : list) {
-            System.out.println(variable.getName() + ": " + variable.getValue());
-        }
 
     }
 
