@@ -53,11 +53,13 @@ public class MiniLang {
         String keyw = "display if then else";
         ArrayList<TOKEN> tokens = new ArrayList<>();
         for (String line : code) {                      //for each line in code
-            String cleaned = line.replaceAll("\\s+", " ").strip();   //cleanup whitespaces
+            String cleaned = (line.replaceAll("\\s+", " ").strip()) + " ";   //cleanup whitespaces
+            System.out.println("--" + cleaned + "--");
             char chara = cleaned.charAt(0);
             StringBuilder sb = new StringBuilder();
             //boolean isComment = false;
             for (int i = 0; i < cleaned.length(); i++) {
+                System.out.println("{" + sb.toString() + "}");
                 if (sb.toString().contains("//")) {
                     while (i < cleaned.length()) {
                         sb.append(cleaned.charAt(i));
@@ -66,10 +68,13 @@ public class MiniLang {
                     tokens.add(new COMMENT(sb.toString()));
                     sb.delete(0, sb.length());
                 } else if (cleaned.charAt(i) == ' ') {
+
                     if (sb.toString().equals("let")) {
                         tokens.add(new LET(sb.toString()));
                     } else if (keyw.contains(sb.toString())) {
                         tokens.add(new KEYWORD(sb.toString()));
+                    } else if (sb.toString().equals("=")) {
+                        tokens.add(new ASSIGN(sb.toString()));
                     } else if (oper.contains(sb.toString())) {
                         tokens.add(new OPERATOR(sb.toString()));
                     } else {
@@ -78,7 +83,16 @@ public class MiniLang {
                     sb.delete(0, sb.length());
                 }
                 else {
-                    sb.append(cleaned.charAt(i));
+                    if (cleaned.charAt(i) == ';') {
+                        tokens.add(new IDENTIFIER(sb.toString()));
+                        sb.delete(0, sb.length());
+                        sb.append(cleaned.charAt(i));
+                        tokens.add(new SEMICOLON(sb.toString()));
+                        sb.delete(0, sb.length());
+                        i++;
+
+                    }
+                    else { sb.append(cleaned.charAt(i)); }
                 }
             }
         }
