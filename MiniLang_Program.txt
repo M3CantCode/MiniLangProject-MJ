@@ -1,10 +1,11 @@
 let x = 5;
 let y = x + 3;
 let z = true;
+let abc = 15;
 display (y);
 // comment
 
 display (3 + 4 * 2);
 
-let x = 6;  //comment: replace x with new number
+let x = 5;
 display (x);

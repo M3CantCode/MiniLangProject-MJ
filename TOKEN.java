@@ -1,32 +1,27 @@
 public class TOKEN {
-    private String name;
-    private String value;
+    private final TokenTypes type;
+    private final String lexeme;
+    private final Object literal;
+    private final int line;
 
-    // Constructors
-    public TOKEN(String name) {
-        this.name = name;
-        this.value = "";
-    }
-    
-    public TOKEN(String name, String value) {
-        this.name = name;
-        this.value = value;
+    public TOKEN(TokenTypes type, String lexeme, Object literal, int line) {
+        this.type = type;
+        this.lexeme = lexeme;
+        this.literal = literal;
+        this.line = line;
     }
 
-    // Getters and Setters
-    public String getName() {
-        return name;
-    }
+    public TokenTypes getType() { return type; }
+    public String getLexeme() { return lexeme; }
+    public Object getLiteral() { return literal; }
+    public int getLine() { return line; }
 
-    public String getValue() {
-        return value;
+    @Override
+    public String toString() {
+        if (type == TokenTypes.NUMBER || type == TokenTypes.IDENTIFIER
+                || type == TokenTypes.STRING || type == TokenTypes  .BOOLEAN) {
+            return "[TOKEN] " + type + " " + lexeme;
+        }
+        return "[TOKEN] " + type;
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-}   
+} 

@@ -13,195 +13,38 @@
 // -
 // ----------
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 public class MiniLang {
-
-    public static void main(String[] args) throws IOException {
-
-        //Calls getText function. Stores array into programText
-        String[] programText = getText();
-
-        //checking array that it read correctly
-        for (int i = 0; i < programText.length; i++) {
-            System.out.print("[" + programText[i] + "] ");
+    public static void main(String[] args) {
+        // Check for correct usage
+        if (args.length < 1) {
+            System.out.println("Usage: java MiniLang <source_file> [--trace]");
+            return;
         }
-        System.out.println("--------------------------------------------------");
-        //checking validity of code to be true or false
-        System.out.println(isValidCode(programText));
-        System.out.println("--------------------------------------------------");
-        //checking logic
 
-        //System.out.println("--------------------------------------------------");
-        //checking tokenizer
-        tokenize(programText);
-    }
+        String filePath = args[0];
+        boolean trace = args.length > 1 && args[1].equals("--trace");
 
-    // tokenize():
-    // - takes in a String array of code
-    // - splits each line into chunks based on whitespace
-    // - checks if chunk(s) meet the criteria for a token
-    // - prints out the type and value of each token (will be used for debugging purposes)
-    // - TODO: add more functionality to the tokenizer, such as handling variables and other types of tokens
-    public static void tokenize(String[] code) {
-        String[] operators = {"+", "-", "*", "/", "%"};
-        ArrayList<TOKEN> tokens = new ArrayList<>();
-        for (String line : code) {
-            String[] chunks = line.split("(?<=;)|(?=;)|\\s+"); // splits the line into chunks based on whitespace and semicolons
+        // Step 1: Read the source file and tokenize it
+        try {
+            String source = Files.readString(Path.of(filePath));
+            Lexer lexer = new Lexer(source);
+            List<TOKEN> tokens = lexer.scanTokens();
 
-            // check if line is empty or a comment, if so, skip to the next line
-            // NOTE: doesn't work properly, need to fix
-            if (chunks.length == 0 || chunks[0].equals("//")) {
-                System.out.println("Skipping line: " + line);
-                continue; 
-            }
-
-            // Iterates through the chunks to create tokens
-            for (int i = 0; i < chunks.length; i++) {
-                String chunk = chunks[i];
-                // checks if the chunk is an operator, (For OPERATOR Tokens)
-                if (Arrays.asList(operators).contains(chunks[i])) {
-                    // creates a new OPERATOR token
-                    OPERATOR op = new OPERATOR(chunk);
-                    tokens.add(op);
-                    System.out.println("OPERATOR: " + op.getType());
-                // checks if the chunk is a 'let' command (For VARIABLE Tokens)
-                } else if (chunk.matches("let")) {
-
-                    // check if the next chunks of text are valid for a 'let' command
-                    String varName = chunks[i + 1]; // should be the variable name (only letters)
-                    String assignment = chunks[i + 2]; // should be "="
-                    String varValue = chunks[i + 3]; // should be either a number or boolean
-                    //TODO: also check if varValue is a valid integer variable
-                    if (varName == null || assignment == null ||
-                        varValue == null || varValue.equals(";") ||
-                          !assignment.equals("=")) {
-                        System.out.println("Error: Invalid syntax for 'let' command.");
-                        continue;
-                    }
-
-                    // check if the variable name is valid (only letters)
-                    boolean variableNameValid = varName.matches("[a-zA-Z]+");
-                    if (!variableNameValid) {
-                        System.out.println("Error: Invalid variable name. VARIABLE names must consist of letters only.");
-                        continue;
-                    }
-                    
-                    // check if the variable value is valid (number or boolean)
-                    // if the variable value is valid, create a new VARIABLE token
-                    boolean onlyNumbers = varValue.matches("[0-9]+");
-                    boolean isBoolean = varValue.equals("true") || varValue.equals("false");
-                    if (isBoolean) {
-                        VARIABLE t = new VARIABLE(varName,varValue);
-                        System.out.println("BOOLEAN: " + t.getName());
-                        tokens.add(t);
-                        System.out.println(t.getName() + "'s value is: " + t.getValue());
-                    } else if (onlyNumbers) {
-                        VARIABLE t = new VARIABLE(varName,varValue);
-                            System.out.println("Number: " + t.getName());
-                            tokens.add(t);
-                            System.out.println(t.getName() + "'s value is: " + t.getValue());
-                        } else {
-                            System.out.println("Error: Invalid value for variable. Must be either a boolean or a number.");
-                        }
-                    
-
-                } else {
-                    // creates an unclassified token
-                    // NOTE: This is a placeholder for any other tokens that may be added in the future
-                    TOKEN t = new TOKEN("token", chunk);
-                    System.out.println("TOKEN: " + t.getValue());
-                    tokens.add(t);
+            if (trace) {
+                for (TOKEN token : tokens) {
+                    System.out.println(token);
                 }
             }
-        }
-    }
-
-    // isValidCode
-    // - checks legitimacy of the text
-    // - checks how many commands are called and if there are too many
-    // - ___
-    // returns false in any case of invalidity, defaults true otherwise
-    public static boolean isValidCode(String[] code) {
-        String[] validCommandName = {"let", "display"};
-
-        //for each line
-        for (int i = 0; i < code.length; i++) {
-            String[] str = code[i].split(" ");      //split line into elements split by whitespace
-
-////TODO: Check first element and compare with valid commands
-            //checks every element in the line
-            int commandCount = 0;
-            for (int j = 0; j < str.length; j++) {
-                //running checks for each element in line
-                for (String name : validCommandName) {
-                    //checking if there are multiple named commands in the same line
-                    if (name.strip().equalsIgnoreCase(str[j])) { commandCount++; }
-                }
-                if (commandCount > 1) { return false; }     //returns false if any multiple commands in line
-////TODO: other validity checks in the code text
-            }
-
-        }
-
-        return true;
-    }
-
-
-    //
-    public static void runCode(String[][] code) {
-        //
-        List<VARIABLE> list = new ArrayList<>();
-        list.add(new VARIABLE("testing", "test"));
-        for (String[] c : code) {
-            //
-            if (c[0].equalsIgnoreCase("let")) {
-                list.add(new VARIABLE(c[1], c[2]));
-            }
-        }
-
-        for (int i = 0; i < list.size(); i++) {
-            System.out.println(list.get(i).getName() + ": " + list.get(i).getValue());
-        }
-
-    }
-
-
-    // getText():
-    // - reads off data from file
-    // - searches for "MiniLang_Program.txt"
-    // - tries to read
-    // - if able to: add line to ArrayList, convert ArrayList to Array
-    // returns Array of lines
-    private static String[] getText() throws IOException {
-        //
-        try (BufferedReader br = new BufferedReader(new FileReader("MiniLang_Program.txt"))) {
-            String line;
-            int num = 0;
-            ArrayList<String> lines = new ArrayList<>();
-            while ((line = br.readLine()) != null) {
-                if (!line.isEmpty()) {
-                    num++;
-                    lines.add(line);
-                }
-            }
-            String[] arr = new String[num];
-            for (int i = 0; i < num; i++) {
-                arr[i] = lines.get(i);
-            }
-            return arr;
-
+            // Step 2: pass `tokens` into Parser here (to complete later)
         } catch (IOException e) {
-            throw new FileNotFoundException(e.getMessage());
+            System.out.println("Error: Could not read file '" + filePath + "'.");
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
         }
-
     }
-
-
 }
