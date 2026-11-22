@@ -1,6 +1,7 @@
 let x = 5;
 let y = x + 3;
 let z = true;
+let abc = 15;
 display (y);
 // comment
 
