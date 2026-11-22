@@ -7,5 +7,5 @@ display (y);
 
 display (3 + 4 * 2);
 
-let x = 5;
+let x = 6;  //comment: replace x with new number
 display (x);
