@@ -25,6 +25,7 @@ public class MiniLang {
     public static void main(String[] args) {
         // Check for correct usage
         if (args.length < 1) {
+            // Example input: java MiniLang test.txt --trace
             System.out.println("To run your MiniLang program type: java MiniLang <source_file> [--trace]");
             return;
         }
