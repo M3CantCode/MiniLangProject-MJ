@@ -17,16 +17,23 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class MiniLang {
 
     public static void main(String[] args) throws IOException {
 
+        String file1 = "MiniLang_Program.txt";
+        String file2 = "MiniLang_Read.txt";
+        String file3 = "MiniLang_ErrorTests.txt";
+
+        //Scanner scanner = new Scanner(System.in);
+        //System.out.print("Enter which file you wish to run. (1, 2, 3)\n: ");
+        //String fileIn = scanner.nextLine();
+
+
         //Calls getText function. Stores array into programText
-        String[] programText = getText();
+        String[] programText = getText(file3);
 
         //checking array that it read correctly
 
@@ -49,8 +56,7 @@ public class MiniLang {
     // - prints out the type and value of each token (will be used for debugging purposes)
     // - TODO: add more functionality to the tokenizer, such as handling variables and other types of tokens
     public static void tokenize(String[] code) {
-        String oper = "+ - * / %";
-        String keyw = "display if then else";
+
         ArrayList<TOKEN> tokens = new ArrayList<>();
         for (String line : code) {                      //for each line in code
             String cleaned = (line.replaceAll("\\s+", " ").strip()) + " ";   //cleanup whitespaces
@@ -59,7 +65,35 @@ public class MiniLang {
             StringBuilder sb = new StringBuilder();
             //boolean isComment = false;
             for (int i = 0; i < cleaned.length(); i++) {
-                System.out.println("{" + sb.toString() + "}");
+                if (sb.toString().contains("//")) {
+                    while (i < cleaned.length()) {
+                        sb.append(cleaned.charAt(i));
+                        i++;
+                    }
+                    tokens.add(new COMMENT(sb.toString()));
+                    sb.delete(0, sb.length());
+                }
+                else if (cleaned.charAt(i) == ';') {
+                    tokens.add(toToken(sb.toString()));
+                    sb.delete(0, sb.length());
+                    sb.append(cleaned.charAt(i));
+                    tokens.add(new SEMICOLON(sb.toString()));
+                    sb.delete(0, sb.length());
+                    i++;
+                }
+                else if (cleaned.charAt(i) == ' ') {
+                    if (!sb.toString().isBlank()) {
+                        tokens.add(toToken(sb.toString()));
+                        sb.delete(0, sb.length());
+                    }
+                    //else {sb.delete(0, sb.length());}
+                }
+                else {
+                    sb.append(cleaned.charAt(i));
+                }
+
+
+                /*
                 if (sb.toString().contains("//")) {
                     while (i < cleaned.length()) {
                         sb.append(cleaned.charAt(i));
@@ -68,36 +102,69 @@ public class MiniLang {
                     tokens.add(new COMMENT(sb.toString()));
                     sb.delete(0, sb.length());
                 } else if (cleaned.charAt(i) == ' ') {
-
                     if (sb.toString().equals("let")) {
                         tokens.add(new LET(sb.toString()));
-                    } else if (keyw.contains(sb.toString())) {
+                    } else if (isInArray(keywords, sb.toString())) {
                         tokens.add(new KEYWORD(sb.toString()));
                     } else if (sb.toString().equals("=")) {
                         tokens.add(new ASSIGN(sb.toString()));
-                    } else if (oper.contains(sb.toString())) {
+                    } else if (isInArray(operator, sb.toString())) {
                         tokens.add(new OPERATOR(sb.toString()));
+                    } else if (isNumber(sb.toString())) {
+                        tokens.add(new VARIABLE(sb.toString()));
                     } else {
                         tokens.add(new IDENTIFIER(sb.toString()));
                     }
                     sb.delete(0, sb.length());
                 }
                 else {
-                    if (cleaned.charAt(i) == ';') {
+//                    if (cleaned.charAt(i) == ';') {
+//                        tokens.add(new IDENTIFIER(sb.toString()));
+//                        sb.delete(0, sb.length());
+//                        sb.append(cleaned.charAt(i));
+//                        tokens.add(new SEMICOLON(sb.toString()));
+//                        i++;
+//                        sb.delete(0, sb.length());
+//                    }
+                    else if (cleaned.charAt(i) == '(') {
+                        do {
+                            sb.append(cleaned.charAt(i));
+                            i++;
+                        } while (cleaned.charAt(i) != ')');
+                        sb.append(cleaned.charAt(i));
+                        i++;
                         tokens.add(new IDENTIFIER(sb.toString()));
                         sb.delete(0, sb.length());
-                        sb.append(cleaned.charAt(i));
-                        tokens.add(new SEMICOLON(sb.toString()));
-                        sb.delete(0, sb.length());
-                        i++;
-
                     }
                     else { sb.append(cleaned.charAt(i)); }
+
                 }
+                */
             }
         }
         for (TOKEN tok : tokens) {
             System.out.printf("%s: %s\n", tok.getClass().getSimpleName(), tok.getName());
+        }
+    }
+
+    //checks the contents of the string, returns type of token
+    private static TOKEN toToken(String s) {
+        String[] operator = {"+", "-", "*", "/", "%"};
+        String[] keywords = {"display", "if", "then", "else"};
+
+
+        if (s.equals("let")) {
+            return (new LET(s));
+        } else if (isInArray(keywords, s)) {
+            return (new KEYWORD(s));
+        } else if (s.equals("=")) {
+            return (new ASSIGN(s));
+        } else if (isInArray(operator, s)) {
+            return (new OPERATOR(s));
+        } else if (isNumber(s)) {
+            return (new VARIABLE(s));
+        } else {
+            return (new IDENTIFIER(s));
         }
     }
 
@@ -146,15 +213,39 @@ public class MiniLang {
     }
 
 
+    ///checks for element in array
+    private static boolean isInArray(String[] array, String lookup) {
+        //
+        for (String el : array) {
+            if (el.equals(lookup)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /// returns true if it is a number, false if letter
+    private static boolean isNumber(String lookup) {
+        //int num = 0;
+        for (int i = 0; i < lookup.length(); i++) {
+            if (!(Character.isDigit(lookup.charAt(i)))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
     // getText():
     // - reads off data from file
     // - searches for "MiniLang_Program.txt"
     // - tries to read
     // - if able to: add line to ArrayList, convert ArrayList to Array
     // returns Array of lines
-    private static String[] getText() throws IOException {
+    private static String[] getText(String fileName) throws IOException {
         //
-        try (BufferedReader br = new BufferedReader(new FileReader("MiniLang_Program.txt"))) {
+
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
             int num = 0;
             ArrayList<String> lines = new ArrayList<>();

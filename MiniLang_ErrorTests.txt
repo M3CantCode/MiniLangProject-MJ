@@ -1,4 +1,4 @@
-//comment: testing error
+//comment: testing errors
 let z = 0
 display (z)
 
