@@ -10,7 +10,7 @@ public class Lexer {
     private int current = 0;
     private int line = 1;
 
-    // Key statements to look out for
+    // Key statements to look for
     private static final Map<String, TokenTypes> KEYWORDS = Map.of(
         "let", TokenTypes.LET,
         "display", TokenTypes.DISPLAY,
@@ -21,6 +21,7 @@ public class Lexer {
         "false", TokenTypes.BOOLEAN
     );
 
+    //constructor
     public Lexer(String source) {
         this.source = source;
     }
